@@ -5,7 +5,7 @@
   "type": "module",
   "license": "MIT",
   "author": "Vocuno LLC",
-  "homepage": "https://vocuno.com",
+  "homepage": "https://vocuno.com/mcp",
   "bin": {
     "vocuno": "dist/index.js"
   },
@@ -29,5 +29,22 @@
   "devDependencies": {
     "@types/node": "^20.14.0",
     "typescript": "^5.5.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vocuno/cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vocuno/cli/issues"
+  },
+  "keywords": [
+    "vocuno",
+    "music",
+    "ai-music",
+    "mcp",
+    "cli",
+    "song-generation",
+    "stems",
+    "audio"
+  ]
 }

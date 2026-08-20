@@ -62,11 +62,25 @@ auth
       const creds = ctx.store.load()
       if (!creds?.refreshToken && !creds?.accessToken) throw new AuthRequiredError()
 
-      // Live check (auto-refreshes if the access token expired).
+      // Live check (auto-refreshes if the access token expired). The
+      // /oauth/userinfo endpoint may not be routed on every server build
+      // (Hosting rewrites), so fall back to an MCP call to prove the session.
+      let info: { sub?: string; email?: string } = {}
       const userinfoUrl = creds.userinfoEndpoint || `${ctx.baseUrl}/oauth/userinfo`
-      const res = await ctx.tokens.authedFetch(userinfoUrl)
-      if (!res.ok) throw new Error(`Could not verify the session (HTTP ${res.status})`)
-      const info = (await res.json()) as { sub?: string; email?: string }
+      let live = false
+      try {
+        const res = await ctx.tokens.authedFetch(userinfoUrl)
+        if (res.ok && (res.headers.get('content-type') ?? '').includes('application/json')) {
+          info = (await res.json()) as { sub?: string; email?: string }
+          live = true
+        }
+      } catch {
+        /* fall through to the MCP probe */
+      }
+      if (!live) {
+        const probe = await ctx.client.callTool('get_credits')
+        if (probe.isError) throw new Error('Could not verify the session')
+      }
       const latest = ctx.store.load() ?? creds
       const email = info.email || latest.email
 

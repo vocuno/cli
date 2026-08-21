@@ -26,7 +26,7 @@ interface SharedTrackData {
 
 /** Public share resolution (GET /api/shares/:token — no auth required). */
 async function resolveShare(ctx: CliContext, token: string): Promise<DownloadTarget[]> {
-  const res = await fetch(`${ctx.baseUrl}/api/shares/${encodeURIComponent(token)}`)
+  const res = await ctx.fetchFn(`${ctx.baseUrl}/api/shares/${encodeURIComponent(token)}`)
   if (res.status === 404) throw new Error('Share not found (or its content no longer exists)')
   if (!res.ok) throw new Error(`Share lookup failed (HTTP ${res.status})`)
   const data = (await res.json()) as SharedTrackData

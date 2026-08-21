@@ -46,7 +46,7 @@ auth
   .action(async (opts: { open: boolean }) =>
     runAction(async () => {
       const ctx = createContext()
-      const creds = await login({ baseUrl: ctx.baseUrl, store: ctx.store, open: opts.open })
+      const creds = await login({ baseUrl: ctx.baseUrl, store: ctx.store, fetchFn: ctx.fetchFn, open: opts.open })
       console.log(creds.email ? `Signed in as ${creds.email}` : 'Signed in.')
       console.log(`Credentials saved to ${ctx.store.filePath}`)
     }),
